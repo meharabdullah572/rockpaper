@@ -3,51 +3,22 @@ import streamlit as st
 import tensorflow as tf
 import numpy as np
 import json
-
 from PIL import Image
 
-# Resize image
-img = image.resize((160, 160))
-
-# Convert image to numpy array
-img_array = np.array(img).astype("float32")
-
-# Add batch dimension
-img_array = np.expand_dims(img_array, axis=0)
-
-# IMPORTANT:
-# Do not apply preprocess_input here.
-# Preprocessing is already inside the trained model.
-
-# Prediction
-predictions = model.predict(img_array, verbose=0)
-
-predicted_index = np.argmax(predictions[0])
-
-predicted_class = class_names[predicted_index]
-
-confidence = float(
-    predictions[0][predicted_index]
-) * 100
-
-
-# Page configuration
+# Page Configuration
 st.set_page_config(
     page_title="Rock Paper Scissors AI",
     page_icon="✊",
     layout="centered"
 )
 
-# Custom heading
 st.title("✊ Rock Paper Scissors AI")
-st.write(
-    "Upload your hand gesture image "
-    "and let Deep Learning predict it!"
-)
+st.write("Upload your hand gesture image for prediction!")
 
-# Load trained model
+# Load Model
 @st.cache_resource
 def load_my_model():
+
     model = tf.keras.models.load_model(
         "rock_paper_scissors_model.keras",
         compile=False
@@ -58,14 +29,18 @@ def load_my_model():
 
     return model, classes
 
+
 model, class_names = load_my_model()
 
-# Image upload
+st.write("Model Loaded Successfully!")
+
+# Upload Image
 uploaded_file = st.file_uploader(
     "Upload Rock, Paper or Scissors Image",
     type=["jpg", "jpeg", "png"]
 )
 
+# IMPORTANT: Keep all image code inside this condition
 if uploaded_file is not None:
 
     image = Image.open(uploaded_file).convert("RGB")
@@ -83,33 +58,21 @@ if uploaded_file is not None:
             # Resize image
             img = image.resize((160, 160))
 
-            # Convert to array
-            img_array = np.array(img)
+            # Convert to numpy array
+            img_array = np.array(img).astype("float32")
 
             # Add batch dimension
-            img_array = np.expand_dims(
-                img_array,
-                axis=0
-            )
+            img_array = np.expand_dims(img_array, axis=0)
 
-            # Preprocessing
-            img_array = preprocess_input(
-                img_array.astype("float32")
-            )
-
-            # Prediction
+            # No extra preprocessing here!
             predictions = model.predict(
                 img_array,
                 verbose=0
             )
 
-            predicted_index = np.argmax(
-                predictions[0]
-            )
+            predicted_index = np.argmax(predictions[0])
 
-            predicted_class = class_names[
-                predicted_index
-            ]
+            predicted_class = class_names[predicted_index]
 
             confidence = float(
                 predictions[0][predicted_index]
@@ -138,7 +101,4 @@ if uploaded_file is not None:
             )
 
 st.markdown("---")
-
-st.caption(
-    "Deep Learning Project | MobileNetV2 | TensorFlow"
-)
+st.caption("Deep Learning Project | MobileNetV2 | TensorFlow")
