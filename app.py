@@ -164,7 +164,7 @@ if uploaded_file is not None:
 # PROJECT DOCUMENTS & RESOURCES
 st.divider()
 st.header("📁 Project Documents & Presentation")
-st.write("Aap neechay diye gaye links se project ki report aur presentation download kar saktay hain:")
+st.write("You can download project report and slides from below")
 
 # GitHub Raw links ya direct download links yahan set kar sakte hain
 col_doc1, col_doc2 = st.columns(2)
