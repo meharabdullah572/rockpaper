@@ -5,7 +5,31 @@ import numpy as np
 import json
 
 from PIL import Image
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+
+# Resize image
+img = image.resize((160, 160))
+
+# Convert image to numpy array
+img_array = np.array(img).astype("float32")
+
+# Add batch dimension
+img_array = np.expand_dims(img_array, axis=0)
+
+# IMPORTANT:
+# Do not apply preprocess_input here.
+# Preprocessing is already inside the trained model.
+
+# Prediction
+predictions = model.predict(img_array, verbose=0)
+
+predicted_index = np.argmax(predictions[0])
+
+predicted_class = class_names[predicted_index]
+
+confidence = float(
+    predictions[0][predicted_index]
+) * 100
+
 
 # Page configuration
 st.set_page_config(
